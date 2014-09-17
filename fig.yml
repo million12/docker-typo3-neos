@@ -1,0 +1,31 @@
+neosDbData:
+  image: busybox:latest
+  command: echo dbdata volume container launched
+  volumes:
+    - /var/lib/mysql
+
+neosDb:
+  image: tutum/mariadb:latest
+  ports:
+    - 3306
+  volumes_from:
+    - neosDbData
+  environment:
+    MARIADB_PASS: secret-db-password-qpu34thqrgaR3
+
+neosWebData:
+  image: busybox:latest
+  command: echo webdata volume container launched
+  volumes:
+    - /data
+
+neosWeb:
+  image: million12/typo3-neos
+  ports:
+    - '80:80'
+  links:
+    - neosDb:db
+  volumes_from:
+    - neosWebData
+  environment:
+    NEOS_APP_VHOST_NAMES: 'neos dev.neos test.neos'
