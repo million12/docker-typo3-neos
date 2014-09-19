@@ -28,4 +28,13 @@ neosWeb:
   volumes_from:
     - neosWebData
   environment:
-    NEOS_APP_VHOST_NAMES: 'neos dev.neos test.neos'
+    NEOS_APP_VHOST_NAMES: neos dev.neos test.neos
+
+#dev:
+#  image: million12/php-app-ssh
+#  ports:
+#    - '1122:22'
+#  volumes_from:
+#    - neosWebData
+#  environment:
+#    IMPORT_GITHUB_PUB_KEYS: some,user,names
