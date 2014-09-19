@@ -22,7 +22,7 @@ neosWebData:
 neosWeb:
   image: million12/typo3-neos
   ports:
-    - '80:80'
+    - '8080:80'
   links:
     - neosDb:db
   volumes_from:

@@ -16,7 +16,7 @@ Don't forget to **map vhost names** in your `/etc/hosts`. You can do this easily
 YOUR_DOCKER_IP neos dev.neos test.neos
 ```
 
-**Now go to [http://neos/](http://neos/)** (or http://dev.neos/ for *Development* environment) and enjoy playing with TYPO3 Neos CMS!
+**Now go to [http://neos:8080/](http://neos/)** (or http://dev.neos:8080/ for *Development* environment) and enjoy playing with TYPO3 Neos CMS!
 
 
 #### Manual launch (without fig)
