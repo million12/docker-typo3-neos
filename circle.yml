@@ -1,0 +1,47 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  cache_directories:
+    - "~/docker"
+
+  pre:
+    - docker info && docker version
+    # Cache some Docker images to make builds faster
+    - mkdir -p ~/docker
+    # Cache tutum/mariadb
+    - if [[ -e ~/docker/tutum-mariadb.tar ]]; then docker load -i ~/docker/tutum-mariadb.tar; else docker pull tutum/mariadb:latest && docker save tutum/mariadb > ~/docker/tutum-mariadb.tar; fi
+    
+  override:
+    - docker pull tutum/mariadb:latest
+    - docker pull million12/behat-selenium:latest
+    - docker pull million12/typo3-neos-abstract:latest
+
+# Run tests
+test:
+  pre:
+    - docker build -t million12/typo3-neos .
+
+  override:
+    - docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+    - |
+      docker run -d --name=neos -p=8080:80 --link=db:db \
+        --env="NEOS_APP_DO_INIT=false" \
+        --env="NEOS_APP_DO_INIT_TESTS=true" \
+        --env="NEOS_APP_VHOST_NAMES=neos dev.neos behat.dev.neos" \
+        million12/typo3-neos
+    - sleep 30
+    - docker logs neos
+    - |
+      docker run -ti --volumes-from=neos --link=neos:web --link=db:db million12/behat-selenium "
+        env && \
+        echo \$WEB_PORT_80_TCP_ADDR \$WEB_ENV_NEOS_APP_VHOST_NAMES >> /etc/hosts && cat /etc/hosts && \
+        su www -c \"
+          cd ~/neos && \
+          echo -e '\n\n======== RUNNING TYPO3 NEOS TESTS =======\n\n' && \
+          bin/phpunit -c Build/BuildEssentials/PhpUnit/UnitTests.xml && \
+          bin/phpunit -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml && \
+          bin/behat -c Packages/Application/TYPO3.Neos/Tests/Behavior/behat.yml
+        \"
+      "
