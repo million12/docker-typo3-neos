@@ -28,12 +28,16 @@ neosWeb:
   volumes_from:
     - neosWebData
   environment:
-    NEOS_APP_VHOST_NAMES: neos dev.neos test.neos
+    NEOS_APP_VHOST_NAMES: neos dev.neos behat.dev.neos
+    NEOS_APP_DO_INIT_TESTS: true
 
 #dev:
 #  image: million12/php-app-ssh
 #  ports:
 #    - '1122:22'
+#  links:
+#    - neosDb:db
+#    - neosWeb:web
 #  volumes_from:
 #    - neosWebData
 #  environment:
