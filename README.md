@@ -30,8 +30,15 @@ docker run -d --name=neos -p=8080:80 --link=db:db million12/typo3-neos
 docker logs -f neos # to see how TYPO3 Neos initialisation is going on...
 
 # If you need to SSH into your set up, launch also SSH container and glue it to the above one:
-docker run -d --name=dev --link=db:db --link=neos:web --volumes-from=neos -p=1122:22 million12/php-app-ssh
+docker run -d --name=dev --link=db:db --link=neos:web --volumes-from=neos -p=1122:22 --env="IMPORT_GITHUB_PUB_KEYS=your-github-username" million12/php-app-ssh
 ```
+
+#### Development
+
+If you have launched SSH container with above instruction and you have provided your GitHub username (via **IMPORT_GITHUB_PUB_KEYS** env variable), you can login to it using  
+```ssh -p 1122 www@DOCKER_HOST_IP```
+
+You can use it to execute `./flow` commands, upload files via SFTP etc. Read more about the SSH container and how to use it on [million12/docker-php-app-ssh](https://github.com/million12/docker-php-app-ssh) repository page.
 
 ### Running tests
 
