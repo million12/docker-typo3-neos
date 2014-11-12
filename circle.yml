@@ -2,6 +2,7 @@ machine:
   services:
     - docker
 
+
 dependencies:
   cache_directories:
     - "~/docker"
@@ -9,29 +10,41 @@ dependencies:
   pre:
     - docker info && docker version
     # Cache some Docker images to make builds faster
-    - mkdir -p ~/docker
+    - mkdir -p ~/docker/tutum ~/docker/million12
     # Cache tutum/mariadb
-    - if [[ -e ~/docker/tutum-mariadb.tar ]]; then docker load -i ~/docker/tutum-mariadb.tar; else docker pull tutum/mariadb:latest && docker save tutum/mariadb > ~/docker/tutum-mariadb.tar; fi
+    - if [[ -e ~/docker/tutum/mariadb.tar ]]; then docker load -i ~/docker/tutum/mariadb.tar; else docker pull tutum/mariadb:latest && docker save tutum/mariadb > ~/docker/tutum/mariadb.tar; fi
+    # Cache million12/behat-selenium
+    - if [[ -e ~/docker/million12/behat-selenium.tar ]]; then docker load -i ~/docker/million12/behat-selenium.tar; else docker pull million12/behat-selenium:latest && docker save million12/behat-selenium > ~/docker/million12/behat-selenium.tar; fi
     
   override:
     - docker pull tutum/mariadb:latest
     - docker pull million12/behat-selenium:latest
-    - docker pull million12/typo3-neos-abstract:latest
+
+  post:
+    - docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+
 
 # Run tests
 test:
   pre:
+    # Build parent million12/typo3-neos-abstract container first 
+    - git clone https://github.com/million12/docker-typo3-neos-abstract.git
+    # Check if million12/typo3-neos-abstract has related branch with same name as current $CIRCLE_BRANCH
+    # If so, switch to it and build that version
+    - if git -C docker-typo3-neos-abstract/ branch -a | grep origin/$CIRCLE_BRANCH; then git -C docker-typo3-neos-abstract/ checkout $CIRCLE_BRANCH; fi
+    - docker build -t million12/typo3-neos-abstract docker-typo3-neos-abstract/
+    
+    # Build million12/typo3-neos
     - docker build -t million12/typo3-neos .
 
   override:
-    - docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
     - |
       docker run -d --name=neos -p=8080:80 --link=db:db \
-        --env="NEOS_APP_DO_INIT=false" \
+        --env="NEOS_APP_DO_INIT=true" \
         --env="NEOS_APP_DO_INIT_TESTS=true" \
         --env="NEOS_APP_VHOST_NAMES=neos dev.neos behat.dev.neos" \
         million12/typo3-neos
-    - sleep 30
+    - sleep 60
     - docker logs neos
     - |
       docker run -ti --volumes-from=neos --link=neos:web --link=db:db million12/behat-selenium "
