@@ -13,5 +13,5 @@ ENV NEOS_APP_SITE_PACKAGE TYPO3.NeosDemoTypo3Org
 # ENV: Optional composer install parameters
 #ENV TYPO3_NEOS_COMPOSER_PARAMS --dev --prefer-source
 
-# Pre-install TYPO3 Neos into /tmp/typo3-neos.tgz
-RUN . /build-typo3-neos/pre-install-typo3-neos.sh
+# Pre-install TYPO3 Neos into /tmp/typo3-app.tgz
+RUN . /build-typo3-app/pre-install-typo3-app.sh
