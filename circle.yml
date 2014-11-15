@@ -1,47 +1,69 @@
 machine:
   services:
     - docker
+  hosts:
+    neos: 127.0.0.1
 
 dependencies:
   cache_directories:
     - "~/docker"
-
+  
   pre:
-    - docker info && docker version
-    # Cache some Docker images to make builds faster
-    - mkdir -p ~/docker
-    # Cache tutum/mariadb
-    - if [[ -e ~/docker/tutum-mariadb.tar ]]; then docker load -i ~/docker/tutum-mariadb.tar; else docker pull tutum/mariadb:latest && docker save tutum/mariadb > ~/docker/tutum-mariadb.tar; fi
-    
-  override:
     - docker pull tutum/mariadb:latest
     - docker pull million12/behat-selenium:latest
-    - docker pull million12/typo3-neos-abstract:latest
+    - docker pull million12/typo3-flow-neos-abstract:latest
+    
+  post:
+    # Launch DB backend
+    - docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+    - docker logs -f db | tee -a ${CIRCLE_ARTIFACTS}/docker-db.log:
+        background: true
 
 # Run tests
 test:
   pre:
-    - docker build -t million12/typo3-neos .
-
+    - docker logs db && docker inspect db # Temporary - to investigate some random issues with this container...
+    - docker ps
+    
   override:
-    - docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+    # ##################################################
+    # Build TYPO3 Neos container and do some basic tests
+    # ##################################################
+    - docker build --tag=million12/typo3-neos .
+    # Launch it with default ENV variables
+    - docker run -d --name=neos -p=8100:80 --link=db:db --env="T3APP_NAME=neos" million12/typo3-neos
+    - docker logs -f neos > ${CIRCLE_ARTIFACTS}/docker-neos.log:
+        background: true
+    # Wait till TYPO3 Neos is fully configured
+    - while true; do if grep "nginx entered RUNNING state" ${CIRCLE_ARTIFACTS}/docker-neos.log; then break; else sleep 1; fi done
+    # Test: do basic front-end tests 
+    - curl -L --head http://neos:8100 && curl -s -L http://neos:8100
+    - curl -s --head http://neos:8100 | grep "HTTP/1.1 200 OK" && curl -s --head http://neos:8100 | grep "X-Flow-Powered"
+    - curl -s http://neos:8100 | grep "Planned for change" && curl -s http://neos:8100 | grep "Powered by TYPO3 Neos"
+    - curl -s -L http://neos:8100/neos | grep "TYPO3 Neos Login"
+    
+    
+    # ###################################################################
+    # Launch Neos container again, but do only initialisation for testing
+    # ###################################################################
+    - docker run -d --name=neos-testing -p=8200:80 --link=db:db --env="T3APP_DO_INIT=false" --env="T3APP_DO_INIT_TESTS=true" --env="T3APP_VHOST_NAMES=neos dev.behat.neos" million12/typo3-neos
+    - docker logs -f neos-testing > ${CIRCLE_ARTIFACTS}/docker-neos-testing.log:
+        background: true
+    # Wait till TYPO3 Neos is fully configured
+    - while true; do if grep "nginx entered RUNNING state" -a ${CIRCLE_ARTIFACTS}/docker-neos-testing.log; then break; else sleep 1; fi done
+    - curl -L --head http://neos:8200 && curl -s -L http://neos:8200
+    # DB was not configured, so expect 'Database Error' if you go to front-end page
+    - curl -s -L http://neos:8200 | grep "Database Error"    
+    # Run all Neos tests (unit, functional, behat), but do not fail the build in case of any problems there. These are vendor tests and errors there do not indicate that this Docker image is faulty.
     - |
-      docker run -d --name=neos -p=8080:80 --link=db:db \
-        --env="NEOS_APP_DO_INIT=false" \
-        --env="NEOS_APP_DO_INIT_TESTS=true" \
-        --env="NEOS_APP_VHOST_NAMES=neos dev.neos behat.dev.neos" \
-        million12/typo3-neos
-    - sleep 30
-    - docker logs neos
-    - |
-      docker run -ti --volumes-from=neos --link=neos:web --link=db:db million12/behat-selenium "
+      docker run -ti --volumes-from=neos-testing --link=neos-testing:web --link=db:db million12/behat-selenium "
         env && \
-        echo \$WEB_PORT_80_TCP_ADDR \$WEB_ENV_NEOS_APP_VHOST_NAMES >> /etc/hosts && cat /etc/hosts && \
+        echo \$WEB_PORT_80_TCP_ADDR \$WEB_ENV_T3APP_VHOST_NAMES >> /etc/hosts && cat /etc/hosts && \
         su www -c \"
-          cd ~/neos && \
+          cd ~/typo3-app && \
           echo -e '\n\n======== RUNNING TYPO3 NEOS TESTS =======\n\n' && \
           bin/phpunit -c Build/BuildEssentials/PhpUnit/UnitTests.xml && \
           bin/phpunit -c Build/BuildEssentials/PhpUnit/FunctionalTests.xml && \
           bin/behat -c Packages/Application/TYPO3.Neos/Tests/Behavior/behat.yml
         \"
-      "
+      " || true
