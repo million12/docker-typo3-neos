@@ -39,7 +39,7 @@ test:
     # Test: do basic front-end tests 
     - curl -L --head http://neos:8100 && curl -s -L http://neos:8100
     - curl -s --head http://neos:8100 | grep "HTTP/1.1 200 OK" && curl -s --head http://neos:8100 | grep "X-Flow-Powered"
-    - curl -s http://neos:8100 | grep "Planned for change" && curl -s http://neos:8100 | grep "Powered by TYPO3 Neos"
+    - curl -s http://neos:8100 | grep "Power when you need it" && curl -s http://neos:8100 | grep "Powered by TYPO3 Neos"
     - curl -s -L http://neos:8100/neos | grep "TYPO3 Neos Login"
     
     
