@@ -9,13 +9,13 @@ dependencies:
     - "~/docker"
   
   pre:
-    - docker pull tutum/mariadb:latest
+    - docker pull million12/mariadb:latest
     - docker pull million12/behat-selenium:latest
     - docker pull million12/typo3-flow-neos-abstract:latest
     
   post:
     # Launch DB backend
-    - docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+    - docker run -d --name=db --env="MARIADB_PASS=my-pass" million12/mariadb
     - docker logs -f db | tee -a ${CIRCLE_ARTIFACTS}/docker-db.log:
         background: true
 

@@ -14,7 +14,7 @@ By default, the container starts and fully configure TYPO3 Neos, incl. importing
 Launch required containers:
 
 ```
-docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+docker run -d --name=db --env="MARIADB_PASS=my-pass" million12/mariadb
 docker run -d --name=neos -p=8080:80 --link=db:db --env="T3APP_VHOST_NAMES=neos dev.neos" million12/typo3-neos
 ```
 
@@ -63,7 +63,7 @@ It is very easy to run unit, functional and Behat tests against TYPO3 Neos with 
 
 Here's how you can run all TYPO3 Neos test suites:  
 ```
-docker run -d --name=db --env="MARIADB_PASS=my-pass" tutum/mariadb
+docker run -d --name=db --env="MARIADB_PASS=my-pass" million12/mariadb
 docker run -d --name=neos-testing --link=db:db --env="T3APP_VHOST_NAMES=behat.dev.neos" --env="T3APP_DO_INIT_TESTS=true" --env="T3APP_DO_INIT=false" million12/typo3-neos
 
 # Wait till Neos container is fully provisioned (docker logs -f neos-testing). Then launch tests:

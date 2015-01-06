@@ -1,5 +1,5 @@
 db:
-  image: tutum/mariadb:latest
+  image: million12/mariadb:latest
   ports:
     - 3306
   environment:
