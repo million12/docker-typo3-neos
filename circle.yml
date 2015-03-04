@@ -5,9 +5,6 @@ machine:
     neos: 127.0.0.1
 
 dependencies:
-  cache_directories:
-    - "~/docker"
-  
   pre:
     - docker pull million12/mariadb:latest
     - docker pull million12/behat-selenium:latest

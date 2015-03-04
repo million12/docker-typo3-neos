@@ -7,6 +7,8 @@ It is an example of how you can build your own TYPO3 Neos installation, perhaps 
  
 This container contains PHP/Nginx setup. You will need a separate container with database. See the instructions below.
 
+**CAVEAT:** by default, this image contain development (master) version of Neos. To switch to different release, edit `T3APP_BUILD_BRANCH` (can be: branch name or tag name) in Dockerfile and re-build the image. See the [neos.typo3.org](http://neos.typo3.org/) website or [git repository](https://git.typo3.org/Neos/Distributions/Base.git) for info about latest stable version.
+
 ## Usage
 
 By default, the container starts and fully configure TYPO3 Neos, incl. importing default site package and creating the 1st admin user. Login: `admin`, password: `password`.
@@ -43,13 +45,13 @@ You will find TYPO3 Neos in `typo3-app` directory (by default). You can do all `
 Note: the good part with that side SSH container is that it is build on top of [million12/php-app](https://github.com/million12/docker-php-app) image, exactly the same which is used as a base iamge for [million12/typo3-flow-neos-abstract](https://github.com/million12/docker-typo3-flow-neos-abstract). Therefore you can be sure you have the same PHP configuration, the same software as inside container with running TYPO3 Neos. In practise it means: no quirk issues due to differences in environments.
 
 
-## Usage with fig
+## Usage with docker-compose (old fig)
 
-Instead of manually launching all containers like described above, you can use [Fig](http://www.fig.sh/). Fig is a Docker orchestration tool and it is very easy to use. If you do not have it yet, [install](http://www.fig.sh/install.html) it first. 
+Instead of manually launching all containers like described above, you can use [Docker Compose](https://docs.docker.com/compose/). Docker Compose is an orchestration tool and it is very easy to use. If you do not have it yet, install it first. 
 
-The [fig.yml](fig.yml) config file is already provided, so you can **launch TYPO3 Neos with just one command**:  
+The [docker-compose.yml](docker-compose.yml) config file is already provided, so you can **launch TYPO3 Neos with just one command**:  
 ```
-fig up [-d]
+docker-compose up [-d]
 ```
 
 And you're done.
