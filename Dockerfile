@@ -1,3 +1,6 @@
+#
+# million12/typo3-neos
+#
 FROM million12/typo3-flow-neos-abstract:latest
 MAINTAINER Marcin Ryzycki marcin@m12.io
 
