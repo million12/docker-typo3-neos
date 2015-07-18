@@ -27,7 +27,7 @@ Don't forget to **map vhost name(s)**, provided in above command via `T3APP_VHOS
 YOUR_DOCKER_IP neos dev.neos
 ```
 
-**Now go to [http://neos:8080/](http://neos:8080/)** (or respectively http://dev.neos:8080/ for *Development* environment) and enjoy playing with TYPO3 Neos!
+**Now go to [http://neos:8080/](http://neos:8080/)** (or respectively http://dev.neos:8080/ for *Development* environment) and enjoy playing with Neos CMS!
 
 #### Development
 
@@ -40,7 +40,7 @@ Please provide your GitHub username to `IMPORT_GITHUB_PUB_KEYS` env variable; yo
 ssh -p 1122 www@YOUR_DOCKER_IP
 ```
 
-You will find TYPO3 Neos in `typo3-app` directory (by default). You can do all `./flow` commands from there, upload files via SFTP, in general: do all development using it. Learn more about the SSH container on [million12/docker-php-app-ssh](https://github.com/million12/docker-php-app-ssh) repository page.
+You will find Neos CMS in `typo3-app` directory (by default). You can do all `./flow` commands from there, upload files via SFTP, in general: do all development using it. Learn more about the SSH container on [million12/docker-php-app-ssh](https://github.com/million12/docker-php-app-ssh) repository page.
 
 Note: the good part is that this "side SSH container" is build on top of [million12/nginx-php](https://github.com/million12/docker-nginx-php) image, exactly the same which is used for [million12/typo3-flow-neos-abstract](https://github.com/million12/docker-typo3-flow-neos-abstract). Therefore you can be sure you have the same PHP configuration and the same software as inside container running Neos. In practise terms it means: no weird issues due to differences in environments.
 
@@ -88,4 +88,4 @@ Author: Marcin Ryzycki (<marcin@m12.io>)
 
 ---
 
-**Sponsored by** [Typostrap.io - the new prototyping tool](http://typostrap.io/) for building highly-interactive prototypes of your website or web app. Built on top of TYPO3 Neos CMS and Zurb Foundation framework.
+**Sponsored by** [Typostrap.io - the new prototyping tool](http://typostrap.io/) for building highly-interactive prototypes of your website or web app. Built on top of Neos CMS and Zurb Foundation framework.
