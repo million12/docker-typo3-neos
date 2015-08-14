@@ -1,5 +1,5 @@
 # Neos CMS | Docker image
-[![Circle CI](https://circleci.com/gh/million12/docker-typo3-neos/tree/master.svg?style=svg)](https://circleci.com/gh/million12/docker-typo3-neos/tree/master)
+[![Circle CI](https://circleci.com/gh/million12/docker-typo3-neos/tree/2.0-dev.svg?style=svg)](https://circleci.com/gh/million12/docker-typo3-neos/tree/2.0-dev)
 
 This is the [million12/typo3-neos](https://registry.hub.docker.com/u/million12/typo3-neos/) Docker image with pre-packaged [Neos CMS](http://neos.io/).
 
