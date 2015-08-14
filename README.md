@@ -1,13 +1,23 @@
 # Neos CMS | Docker image
-[![Circle CI](https://circleci.com/gh/million12/docker-typo3-neos.png?style=badge)](https://circleci.com/gh/million12/docker-typo3-neos)
+[![Circle CI](https://circleci.com/gh/million12/docker-typo3-neos/tree/master.svg?style=svg)](https://circleci.com/gh/million12/docker-typo3-neos/tree/master)
 
-This is a [million12/typo3-neos](https://registry.hub.docker.com/u/million12/typo3-neos/) Docker image with pre-installed [Neos](http://neos.io/).
+This is the [million12/typo3-neos](https://registry.hub.docker.com/u/million12/typo3-neos/) Docker image with pre-packaged [Neos CMS](http://neos.io/).
+
+
+## Available versions
+
+* `million12/typo3-neos:latest` - latest **dev-master** version from Neos _master_ branch
+* `million12/typo3-neos:2.0-dev` - latest **`2.0` development** version  from Neos _2.0_ branch
+* `million12/typo3-neos:2.0` - latest **`2.0` stable** version
 
 It is a demo of how you can build your own Neos image, perhaps from your own (private) repository, using the base [million12/typo3-flow-neos-abstract](https://github.com/million12/docker-typo3-flow-neos-abstract) image. Please read extensive documentation there to learn more.
  
 This container contains PHP/Nginx installed/configured (see [million12/nginx](https://github.com/million12/docker-nginx) and [million12/nginx-php](https://github.com/million12/docker-nginx-php) base images. You only need a container with database. See the instructions below.
 
-**CAVEAT:** by default, this image contain 2.0 version of Neos. **To switch to different release**, edit `T3APP_BUILD_BRANCH` (can be: branch name or tag name) in Dockerfile and **re-build the image**. Alternatively, you can **switch it on the fly** providing `T3APP_BUILD_BRANCH=[branch-or-tag-name]` in your `docker-compose.yml` file. See the [neos.io](http://neos.io/) website or [git repository](https://git.typo3.org/Neos/Distributions/Base.git) for info about latest stable version.
+#### Switch to different version
+
+You can easily switch to different version by setting Docker env variables `T3APP_BUILD_BRANCH=[branch-or-tag-name]` together with `T3APP_ALWAYS_DO_PULL=true` and then (re)starting the container. Learn more about it [here](https://github.com/million12/docker-typo3-flow-neos-abstract#build-variables). See the [neos.io](http://neos.io/) website or [git repository](https://git.typo3.org/Neos/Distributions/Base.git) for info about latest stable version.
+
 
 ## Usage
 
