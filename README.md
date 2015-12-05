@@ -16,7 +16,7 @@ This container contains PHP/Nginx installed/configured (see [million12/nginx](ht
 
 #### Switch to different version
 
-You can easily switch to different version by setting Docker env variables `T3APP_BUILD_BRANCH=[branch-or-tag-name]` together with `T3APP_ALWAYS_DO_PULL=true` and then (re)starting the container. Learn more about it [here](https://github.com/million12/docker-typo3-flow-neos-abstract#build-variables). See the [neos.io](http://neos.io/) website or [git repository](https://git.typo3.org/Neos/Distributions/Base.git) for info about latest stable version.
+You can easily switch to different version by setting Docker env variables `T3APP_BUILD_BRANCH=[branch-or-tag-name]` together with `T3APP_ALWAYS_DO_PULL=true` and then (re)starting the container. Learn more about it [here](https://github.com/million12/docker-typo3-flow-neos-abstract#build-variables). See the [neos.io](http://neos.io/) website or [git repository](https://github.com/neos/neos-base-distribution) for info about latest stable version.
 
 
 ## Usage
