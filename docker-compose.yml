@@ -13,6 +13,7 @@ web:
     - db:db
   environment:
     T3APP_VHOST_NAMES: neos dev.neos behat.dev.neos
+    T3APP_NEOS_SITE_PACKAGE: Neos.Demo
 
 #dev:
 #  image: million12/php-app-ssh
